@@ -16,3 +16,5 @@ public_key_path      = "~/.ssh/amaury.quintero@it-institute-id_rsa.pub"
 private_key_path     = "~/.ssh/amaury.quintero@it-institute-id_rsa"
 custom_instance_type = "t2.micro"
 custom_ami           = "ami-098f16afa9edf40be"
+
+kms_key_id = "arn:aws:kms:us-east-1:347565253946:key/9860c17e-2a93-495d-aaf0-d8fc2f8279dc"

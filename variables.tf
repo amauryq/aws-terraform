@@ -15,3 +15,5 @@ variable "private_key_path" {}
 
 variable "custom_instance_type" {}
 variable "custom_ami" {}
+
+variable "kms_key_id" {}
