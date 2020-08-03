@@ -132,6 +132,13 @@ resource "aws_security_group" "custom_public_sg_1" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  # NFS
+  ingress {
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   # ActiveMQ Console
   ingress {
     from_port   = 8162
