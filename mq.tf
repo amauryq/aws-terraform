@@ -5,6 +5,8 @@
 # WebSocket: 61619
 
 resource "aws_mq_configuration" "custom_mq_conf_1" {
+  count = var.use_mq
+
   name           = "custom_mq_conf_1"
   description    = "Custom Amazon MQ Configuration"
   engine_type    = "ActiveMQ"
@@ -23,6 +25,8 @@ DATA
 }
 
 resource "aws_mq_broker" "custom_mq_broker_1" {
+  count = var.use_mq
+
   broker_name        = "custom_mq_broker_1"
   engine_type        = "ActiveMQ"
   engine_version     = "5.15.12"
@@ -30,8 +34,8 @@ resource "aws_mq_broker" "custom_mq_broker_1" {
   security_groups    = [aws_security_group.custom_public_sg_1.id]
 
   configuration {
-    id       = aws_mq_configuration.custom_mq_conf_1.id
-    revision = aws_mq_configuration.custom_mq_conf_1.latest_revision
+    id       = aws_mq_configuration.custom_mq_conf_1[count.index].id
+    revision = aws_mq_configuration.custom_mq_conf_1[count.index].latest_revision
   }
 
   subnet_ids = [aws_subnet.custom_public_subnet_1.id]

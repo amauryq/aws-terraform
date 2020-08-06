@@ -3,6 +3,8 @@
 ## Key Pair
 
 resource "aws_key_pair" "custom_auth_1" {
+  count = var.use_ec2
+  
   key_name   = var.key_name
   public_key = file(var.public_key_path)
 }
@@ -12,6 +14,8 @@ resource "aws_key_pair" "custom_auth_1" {
 ## IAM
 
 resource "aws_iam_role" "custom_iam_role_1" {
+  count = var.use_ec2
+  
   name = "custom_iam_role_1"
 
   assume_role_policy = <<EOF
@@ -32,8 +36,10 @@ EOF
 }
 
 resource "aws_iam_role_policy" "custom_iam_role_policy_1" {
+  count = var.use_ec2
+  
   name = "custom_iam_role_policy_1"
-  role = aws_iam_role.custom_iam_role_1.id
+  role = aws_iam_role.custom_iam_role_1[count.index].id
 
   policy = <<EOF
 {
@@ -50,13 +56,17 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "custom_instance_profile_1" {
+  count = var.use_ec2
+  
   name = "custom_iam_role_1"
-  role = aws_iam_role.custom_iam_role_1.name
+  role = aws_iam_role.custom_iam_role_1[count.index].name
 }
 
 ## EBS Volume
 
 resource "aws_ebs_volume" "custom_ebs_1" {
+  count = var.use_ec2
+
   type              = "io1"
   size              = 8
   iops              = 100
@@ -70,11 +80,13 @@ resource "aws_ebs_volume" "custom_ebs_1" {
 }
 
 resource "aws_instance" "custom_instance_1" {
+  count = var.use_ec2
+  
   instance_type           = var.custom_instance_type
   ami                     = var.custom_ami
-  key_name                = aws_key_pair.custom_auth_1.id
+  key_name                = aws_key_pair.custom_auth_1[count.index].id
   vpc_security_group_ids  = [aws_security_group.custom_public_sg_1.id]
-  iam_instance_profile    = aws_iam_instance_profile.custom_instance_profile_1.id
+  iam_instance_profile    = aws_iam_instance_profile.custom_instance_profile_1[count.index].id
   subnet_id               = aws_subnet.custom_public_subnet_1.id
   monitoring              = true
   disable_api_termination = false
@@ -102,7 +114,7 @@ git clone https://github.com/aws/efs-utils
 cd efs-utils
 make rpm
 yum -y install ./build/amazon-efs-utils*rpm
-# mount -t efs -o tls ${aws_efs_file_system.custom_efs_1.id}:/ /var/www/html/
+# mount -t efs -o tls ${aws_efs_file_system.custom_efs_1[count.index].id}:/ /var/www/html/
 echo "<html><h1>Welcome to ${var.domain_name}</h1><h2>Public IP is: $(curl http://169.254.169.254/latest/meta-data/public-ipv4)</h2></html>" > /var/www/html/index.html
 service httpd start
 chkconfig httpd on
@@ -114,9 +126,11 @@ chkconfig httpd on
 }
 
 resource "aws_volume_attachment" "custom_volume_attachment_1" {
+  count = var.use_ec2
+
   device_name  = "/dev/sdb"
-  volume_id    = aws_ebs_volume.custom_ebs_1.id
-  instance_id  = aws_instance.custom_instance_1.id
+  volume_id    = aws_ebs_volume.custom_ebs_1[count.index].id
+  instance_id  = aws_instance.custom_instance_1[count.index].id
   force_detach = true
 }
 

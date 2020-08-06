@@ -1,3 +1,9 @@
+variable "use_vpc" {}
+variable "use_ec2" {}
+variable "use_efs" {}
+variable "use_ecr" {}
+variable "use_mq" {}
+
 variable "aws_profile" {}
 variable "aws_region" {}
 data "aws_availability_zones" "available" {}
