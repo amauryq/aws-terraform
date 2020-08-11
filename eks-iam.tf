@@ -86,12 +86,6 @@ resource "aws_iam_access_key" "k8s_users_access_key" {
 }
 
 output "secret" {
-  value = [
-    aws_iam_access_key.k8s_users_access_key[0].id,
-    aws_iam_access_key.k8s_users_access_key[0].secret,
-    aws_iam_access_key.k8s_users_access_key[1].id,
-    aws_iam_access_key.k8s_users_access_key[1].secret,
-    aws_iam_access_key.k8s_users_access_key[2].id,
-    aws_iam_access_key.k8s_users_access_key[2].secret
-  ]
+  count = length(aws_iam_access_key.k8s_users_access_key)
+  value = aws_iam_access_key.k8s_users_access_key[count.index].secret
 }
