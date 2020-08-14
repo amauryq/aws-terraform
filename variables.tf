@@ -23,3 +23,8 @@ variable "custom_instance_type" {}
 variable "custom_ami" {}
 
 variable "kms_key_id" {}
+
+
+variable k8s_role_names {}
+variable k8s_group_names {}
+variable k8s_user_names {}

@@ -5,7 +5,7 @@ data "aws_caller_identity" "current" {}
 resource "aws_iam_role" "k8s_roles" {
   count       = length(var.k8s_role_names)
   name        = var.k8s_role_names[count.index]
-  description = var.k8s_role_descriptions[count.index]
+  description = var.k8s_role_names[count.index]
 
   assume_role_policy = <<POLICY
 {
@@ -85,7 +85,7 @@ resource "aws_iam_access_key" "k8s_users_access_key" {
   user  = aws_iam_user.k8s_users[count.index].name
 }
 
-output "secret" {
-  count = length(aws_iam_access_key.k8s_users_access_key)
-  value = aws_iam_access_key.k8s_users_access_key[count.index].secret
-}
+#output "secret" {
+#  count = length(aws_iam_access_key.k8s_users_access_key)
+#  value = aws_iam_access_key.k8s_users_access_key[count.index].secret
+#}
