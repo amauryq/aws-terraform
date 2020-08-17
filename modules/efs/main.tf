@@ -1,6 +1,13 @@
-resource "aws_efs_file_system" "custom_efs_1" {
-  count = var.use_efs
+# Main
 
+provider "aws" {
+  profile = var.aws_profile
+  region  = var.aws_region
+}
+
+# EFS
+
+resource "aws_efs_file_system" "custom_efs_1" {
   creation_token   = "custom_token_1"
   encrypted        = true
   kms_key_id       = var.kms_key_id
@@ -16,9 +23,7 @@ resource "aws_efs_file_system" "custom_efs_1" {
 }
 
 resource "aws_efs_file_system_policy" "custom_efs_policy_1" {
-  count = var.use_efs
-
-  file_system_id = aws_efs_file_system.custom_efs_1[count.index].id
+  file_system_id = aws_efs_file_system.custom_efs_1.id
 
   policy = <<POLICY
 {
@@ -31,7 +36,7 @@ resource "aws_efs_file_system_policy" "custom_efs_policy_1" {
             "Principal": {
                 "AWS": "*"
             },
-            "Resource": "${aws_efs_file_system.custom_efs_1[count.index].arn}",
+            "Resource": "${aws_efs_file_system.custom_efs_1.arn}",
             "Action": [
                 "elasticfilesystem:ClientMount",
                 "elasticfilesystem:ClientRootAccess",
@@ -49,17 +54,13 @@ POLICY
 }
 
 resource "aws_efs_mount_target" "custom_efs_mount_target_1" {
-  count = var.use_efs
-
-  file_system_id  = aws_efs_file_system.custom_efs_1[count.index].id
-  subnet_id       = aws_subnet.custom_public_subnet_1.id
-  security_groups = [aws_security_group.custom_public_sg_1.id]
+  file_system_id  = aws_efs_file_system.custom_efs_1.id
+  subnet_id       = data.aws_subnet.custom_public_subnet_1.id
+  security_groups = [data.aws_security_group.custom_public_sg_1.id]
 }
 
-resource "aws_efs_mount_target" "custom_efs_mount_target_2" {
-  count = var.use_efs
-
-  file_system_id  = aws_efs_file_system.custom_efs_1[count.index].id
-  subnet_id       = aws_subnet.custom_public_subnet_2.id
-  security_groups = [aws_security_group.custom_public_sg_1.id]
-}
+# resource "aws_efs_mount_target" "custom_efs_mount_target_2" {
+#   file_system_id  = aws_efs_file_system.custom_efs_1.id
+#   subnet_id       = data.aws_subnet.custom_public_subnet_2.id
+#   security_groups = [data.aws_security_group.custom_public_sg_1.id]
+# }
