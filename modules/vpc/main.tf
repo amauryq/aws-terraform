@@ -1,4 +1,11 @@
-#----- VPC -----
+# Main
+
+provider "aws" {
+  profile = var.aws_profile
+  region  = var.aws_region
+}
+
+# VPC
 
 resource "aws_vpc" "custom_vpc_1" {
   cidr_block           = var.vpc_cidr
