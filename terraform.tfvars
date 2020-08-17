@@ -5,7 +5,7 @@ use_ecr = 0
 use_mq  = 0
 
 aws_profile = "it-institute"
-aws_region  = "us-east-1"
+aws_region  = "us-east-2"
 vpc_cidr    = "10.0.0.0/16"
 cidrs = {
   public1  = "10.0.1.0/24"
