@@ -1,8 +1,3 @@
-provider "aws" {
-    profile = "${var.aws_profile}"
-    region = "${var.aws_region}"
-}
-
 resource "aws_iam_role" "ftp-server" {
   name = "tf-test-transfer-server-iam-role"
 
@@ -24,7 +19,7 @@ EOF
 
 resource "aws_iam_role_policy" "ftp-server" {
   name = "tf-test-transfer-server-iam-policy"
-  role = "${aws_iam_role.ftp-server.id}"
+  role = aws_iam_role.ftp-server.id
 
   policy = <<POLICY
 {
@@ -45,10 +40,10 @@ POLICY
 
 resource "aws_transfer_server" "ftp-server" {
   identity_provider_type = "SERVICE_MANAGED"
-  logging_role           = "${aws_iam_role.ftp-server.arn}"
+  logging_role           = aws_iam_role.ftp-server.arn
 
   tags = {
-    NAME = "${var.ftp_server_name}"
-    ENV  = "${var.env}"
+    NAME = var.ftp_server_name
+    ENV  = var.env
   }
 }

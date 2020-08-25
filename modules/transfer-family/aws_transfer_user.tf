@@ -19,7 +19,7 @@ EOF
 
 resource "aws_iam_role_policy" "ftp-user" {
   name = "tf-test-transfer-user-iam-policy"
-  role = "${aws_iam_role.ftp-user.id}"
+  role = aws_iam_role.ftp-user.id
 
   policy = <<POLICY
 {
@@ -39,17 +39,17 @@ POLICY
 }
 
 resource "aws_transfer_user" "ftp-user" {
-  server_id = "${aws_transfer_server.ftp-server.id}"
-  user_name = "${var.ftp_user_name}"
-  role      = "${aws_iam_role.ftp-user.arn}"
+  server_id = aws_transfer_server.ftp-server.id
+  user_name = var.ftp_user_name
+  role      = aws_iam_role.ftp-user.arn
 
   tags = {
-    NAME = "${var.ftp_user_name}"
+    NAME = var.ftp_user_name
   }
 }
 
 resource "aws_transfer_ssh_key" "ftp-user" {
-  server_id = "${aws_transfer_server.ftp-server.id}"
-  user_name = "${aws_transfer_user.ftp-user.user_name}"
-  body      = "${var.ftp_user_pubkey}"
+  server_id = aws_transfer_server.ftp-server.id
+  user_name = aws_transfer_user.ftp-user.user_name
+  body      = var.ftp_user_pubkey
 }
