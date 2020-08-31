@@ -5,7 +5,7 @@ provider "aws" {
 
 # server
 
-resource "aws_iam_role" "ftp-server" {
+resource "aws_iam_role" "ftp_server" {
   name = "tf-test-transfer-server-iam-role"
 
   assume_role_policy = <<EOF
@@ -24,9 +24,9 @@ resource "aws_iam_role" "ftp-server" {
 EOF
 }
 
-resource "aws_iam_role_policy" "ftp-server" {
+resource "aws_iam_role_policy" "ftp_server" {
   name = "tf-test-transfer-server-iam-policy"
-  role = aws_iam_role.ftp-server.id
+  role = aws_iam_role.ftp_server.id
 
   policy = <<POLICY
 {
@@ -45,9 +45,9 @@ resource "aws_iam_role_policy" "ftp-server" {
 POLICY
 }
 
-resource "aws_transfer_server" "ftp-server" {
+resource "aws_transfer_server" "ftp_server" {
   identity_provider_type = "SERVICE_MANAGED"
-  logging_role           = aws_iam_role.ftp-server.arn
+  logging_role           = aws_iam_role.ftp_server.arn
 
   tags = {
     NAME = var.ftp_server_name
@@ -57,7 +57,7 @@ resource "aws_transfer_server" "ftp-server" {
 
 # user
 
-resource "aws_iam_role" "ftp-user" {
+resource "aws_iam_role" "ftp_user" {
   name = "tf-test-transfer-user-iam-role"
 
   assume_role_policy = <<EOF
@@ -76,9 +76,9 @@ resource "aws_iam_role" "ftp-user" {
 EOF
 }
 
-resource "aws_iam_role_policy" "ftp-user" {
+resource "aws_iam_role_policy" "ftp_user" {
   name = "tf-test-transfer-user-iam-policy"
-  role = aws_iam_role.ftp-user.id
+  role = aws_iam_role.ftp_user.id
 
   policy = <<POLICY
 {
@@ -97,18 +97,18 @@ resource "aws_iam_role_policy" "ftp-user" {
 POLICY
 }
 
-resource "aws_transfer_user" "ftp-user" {
-  server_id = aws_transfer_server.ftp-server.id
+resource "aws_transfer_user" "ftp_user" {
+  server_id = aws_transfer_server.ftp_server.id
   user_name = var.ftp_user_name
-  role      = aws_iam_role.ftp-user.arn
+  role      = aws_iam_role.ftp_user.arn
 
   tags = {
     NAME = var.ftp_user_name
   }
 }
 
-resource "aws_transfer_ssh_key" "ftp-user" {
-  server_id = aws_transfer_server.ftp-server.id
-  user_name = aws_transfer_user.ftp-user.user_name
+resource "aws_transfer_ssh_key" "ftp_user" {
+  server_id = aws_transfer_server.ftp_server.id
+  user_name = aws_transfer_user.ftp_user.user_name
   body      = file(var.ftp_user_pubkey)
 }
